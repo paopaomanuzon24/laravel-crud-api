@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -21,9 +22,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
+       /*  $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'body' => 'required|string',
         ]);
@@ -35,8 +36,8 @@ class PostController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        $post = Post::create($validator->validated());
+ */
+        $post = Post::create($request->validated());
 
         return response()->json([
             'success' => true,
@@ -58,19 +59,18 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PostRequest $request, string $id)
     {
 
-         $post = Post::findOrFail($id);
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
-        ]);
+        $post = Post::findOrFail($id);
+        $post->update($request->validated());
 
 
-        $post->update($validated);
+
+
 
         return response()->json([
+            'success' => true,
             'message' => 'Post updated successfully',
             'data' => $post
         ], 200);
