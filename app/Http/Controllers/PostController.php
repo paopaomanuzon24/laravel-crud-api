@@ -23,26 +23,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-      $validator = Validator::make($request->all(), [
-        'title' => 'required|string|max:255',
-        'body' => 'required|string',
-    ]);
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $post = Post::create($validator->validated());
+
         return response()->json([
-            'success' => false,
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422);
-    }
-
-    $post = Post::create($validator->validated());
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Post created successfully.',
-        'data' => $post
-    ], 201);
+            'success' => true,
+            'message' => 'Post created successfully.',
+            'data' => $post
+        ], 201);
     }
 
     /**
@@ -52,7 +52,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::find($id);
-        return response()->json($post);
+        return response()->json($post, 200);
     }
 
     /**
